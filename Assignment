@@ -1,0 +1,79 @@
+# Q(1) 
+
+getwd()
+setwd("C:/Users/admin1/Studies/AMMA")
+
+#Reading Empl dataset
+
+Emp <- read.csv('Emp.csv')
+
+#Reading Dept dataset
+
+Dept <- read.csv('Dept.csv')
+
+#Merging datasets by Department No column(DEPTNO)
+
+my_final <- merge(Emp, Dept, by = "DEPTNO")
+
+#View resulting dataset
+
+View(my_final)
+
+###############
+
+#Q(2)
+
+mean_data <- aggregate(my_final[,'SAL'],list(Location = my_final$LOC), FUN = mean)
+
+#Changing column name to 'Average Salary'
+
+colnames(mean_data) <- c("Location", "Average Salary")
+
+#Viewing average salary by location
+
+View(mean_data)
+
+###############
+
+#Q(3)
+
+
+my_final$manager_name <- lookup(my_final$MGR, my_final[,2:3])
+
+#Listing number of reportees for each manager
+
+employee_number <- aggregate(my_final[,"manager_name"], list(my_final$manager_name), FUN = length)
+
+colnames(employee_number) <- c("manager_names", "reporting_employees")
+
+#Viewing manager with maximum number of reportees
+
+employee_number[which.max(employee_number$reporting_employees),]
+
+aggregate((employee_number$reporting_employees), list(employee_number$manager_names), FUN = max)
+
+
+###############
+
+
+#Q(4)
+
+for(i in 1:nrow(my_final)) 
+{
+  if (my_final[i,4] == 'ANALYST'){                   
+    my_final[i,7] <- (my_final[i,7]*1.15)           
+  }else if (my_final[i,4] == 'CLERK'){              
+         my_final[i,7] <- (my_final[i,7]*1.125)
+  }else if (my_final[i,4] == 'MANAGER'){             
+         my_final[i,7] <- (my_final[i,7]*1.102)
+  }else if (my_final[i,4] == 'PRESIDENT'){           
+         my_final[i,7] <- (my_final[i,7]*1.057)
+  }else if(my_final[i,4] == 'SALESMAN'){
+         my_final[i,7] <- (my_final[i,7]*1.133)
+  }else{
+    NULL
+  }  
+}
+
+
+###################################################################################
